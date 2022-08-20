@@ -1,78 +1,111 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-int main()
-{
- int choix,sucre,lait,i=0;
-    float prix;
-    char *nomechoix,*qntsucre,*qntlait;
-    while(i==0){
+int lechoix(){
+    int choix,i;
     do{
-            printf("appuyez sur 1 pour le cafe\n"
-                    "appuyez sur 2 pour le the\n"
-                     "appuyez sur 3 pour le chocolat\n"
-                     "appuyez sur 4 pour le soda\n");
-            scanf("%d",&choix);
+        printf("appuyez sur 1 pour le cafe\nappuyez sur 2 pour le the\nappuyez sur 3 pour le chocolat\nappuyez sur 4 pour le soda\n");
+        scanf("%d",&choix);
         }while(choix>4 || choix<1);
-        switch(choix){
+    return choix;
+}
+char* qntdrink(lechoix){
+    char *nomechoix;
+    if(lechoix==1){
+        nomechoix=" cafe ";
+    }else if(lechoix==2){
+        nomechoix=" the ";
+    }else if(lechoix==3){
+        nomechoix=" chocolat ";
+    }else{
+        nomechoix=" soda ";
+    }
+    return nomechoix;
+}
+int lechoixsucre(int lechoix){
+    int sucre;
+    if(lechoix!=4){
+    do{
+     printf("Appuyez sur 0 si vous ne voulez pas de sucre\nappuyez sur 1 si vous voulez du sucre\nappuyez sur 2 si vous voulez beaucoup de sucre\n");
+        scanf("%d",&sucre);
+    }while(sucre>2 || sucre<0);
+    }
+    return sucre;
+}
+char* qntsucre(lechoixsucre){
+    char *sucre;
+    if(lechoixsucre==0){
+        sucre=" est sans sucre ";
+    }else if(lechoixsucre==1){
+        sucre="est sucre";
+    }else if(lechoixsucre==2){
+        sucre=" est tres sucre ";
+    }
+    return sucre;
+}
+int lechoixlait(int lechoix){
+    int lait;
+    if(lechoix!=4){
+         do{
+        printf("Si vous ne voulez pas de lait,appuyez sur 0\nSi vous voulez du lait, appuyez sur 1\n");
+        scanf("%d",&lait);
+    }while(lait>1 || lait<0);
+    }
+     return lait;
+}
+char* qntlait(lechoixlait){
+    char *lait;
+    if(lechoixlait==1){
+        lait=" avec lait ";
+    }else
+        lait="";
+    return lait;
+}
+
+float caclculeprix(lechoix,lechoixlait,lechoixsucre){
+    float prix;
+        switch(lechoix){
         case 1 :
-             nomechoix="cafe";
              prix=2;
              break;
         case 2 :
-             nomechoix="the";
              prix=2;
              break;
         case 3 :
-             nomechoix="chocolat";
-             prix=3;
-             break;
-        case 4 :
-             nomechoix="soda";
-             prix=4;
+             prix=2.5;
              break;
         }
-
-        if(nomechoix!="soda"){
-            do{
-                printf("Appuyez sur 0 si vous ne voulez pas de sucre\n"
-                      "appuyez sur 1 si vous voulez du sucre\n"
-                       "appuyez sur 2 si vous voulez beaucoup de sucre\n");
-                scanf("%d",&sucre);
-            }while(sucre>2 || sucre<0);
-            switch(sucre){
-            case 0 :
-                 qntsucre="est sans sucre";
-                 break;
-            case 1 :
-                 qntsucre="est  sucre";
-                 prix=prix+0.25;
-                 break;
-            case 2:
-                 qntsucre="est  tres sucre";
-                 prix=prix+0.50;
-                 break;
-            }
-            do{
-                printf("Si vous ne voulez pas de lait,appuyez sur 0 \nSi vous voulez du lait, appuyez sur 1 ");
-                scanf("%d",&lait);
-            }while(lait>1 || lait<0);
-            switch(lait){
-            case 0 :
-                 break;
-            case 1 :
-                 qntlait="aver lait ";
-                 prix=prix+1;
-                 break;
-            }
-            printf("vous davez payer %f DH \n",prix);
-            printf("voter %s %s %s est pret \n\n",nomechoix,qntsucre,qntlait);
-        }else{
-            printf("vous davez payer %f DH \n",prix);
-            printf("voter %s est pret \n\n",nomechoix);
+        prix =prix+((lechoixlait*1)+(lechoixsucre*0.25));
+        if(lechoix==4){
+            prix=3;
         }
-
-    }
-
+    return prix;
 }
+void affichage(qntdrink,qntlait,qntsucre){
+  printf("\n\nvoter%s%s%sest pret \n\n",qntdrink,qntlait,qntsucre);
+}
+void verifier(float caclculeprix,char* qntdrink,char* qntlait,char* qntsucre){
 
+float money ;
+ printf("vous davez payer %f DH \n",caclculeprix);
+ printf("Entrez l'argent :");
+ scanf("%f",&money);
+ if(money<caclculeprix){
+    printf("Vous n'avez pas assez d'argent votre commande a ete annulee \n\n");
+ }else if(money==caclculeprix){
+    affichage(qntdrink,qntlait,qntsucre);
+ }else{
+     money=money-caclculeprix ;
+    printf("le reste :  %f \n",money);
+    affichage(qntdrink,qntlait,qntsucre);
+ }
+}
+int main()
+{
+    int i=0;
+    while(i==0){
+        int a=lechoix();
+        int b=lechoixsucre(a),c=lechoixlait(a);
+        float d= caclculeprix(a,b,c);
+        verifier(d,qntdrink(a),qntsucre(b),qntlait(c));
+    }
+}
